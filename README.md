@@ -1,3 +1,24 @@
+# 진행
+
+## 컨셉
+React-Function
+
+## 진행도
+- [x] 1. 설치
+- [ ] 2. 편집방법
+- [ ] 3. 컴포넌트 생성 방법
+- [ ] 4. 데이터 전달
+- [ ] 5. 이벤트
+- [ ] 6. 상태관리
+- [ ] 7. CRUD
+- [ ] 8. 쉽고 만족도 높은 툴 만들기 : 
+  - [ ] <span style="color:orange">Notepad</span>
+  - [ ]  TodoList
+  - [ ]  etc
+
+---
+🔽Default README.md🔽
+---
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
