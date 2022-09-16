@@ -83,6 +83,51 @@ function Create(props) {
   );
 }
 
+function Update(props) {
+  // props.title, props.body
+  const [title, setTitle] = useState(props.title);
+  const [body, setBody] = useState(props.body);
+
+  return (
+    <article>
+      <h2>Update</h2>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          // const title = event.target.title.value;
+          // const body = event.target.body.value;
+          props.onUpdate(title, body);
+        }}
+      >
+        <p>
+          <input
+            type="text"
+            name="title"
+            placeholder="Title"
+            value={title}
+            onChange={(event) => {
+              setTitle(event.target.value);
+            }}
+          />
+        </p>
+        <p>
+          <textarea
+            name="body"
+            placeholder="Body"
+            value={body}
+            onChange={(event) => {
+              setBody(event.target.value);
+            }}
+          ></textarea>
+        </p>
+        <p>
+          <input type="submit" value="Save" />
+        </p>
+      </form>
+    </article>
+  );
+}
+
 function App() {
   const [mode, setMode] = useState("WELCOME");
   const [id, setId] = useState(null);
@@ -93,6 +138,7 @@ function App() {
   ]);
   const [nextId, setNextId] = useState(topics.length + 1);
   let content = null;
+  let contextControl = null;
 
   // mode에 따라서 content를 다르게 보여준다.
   if (mode === "WELCOME") {
@@ -107,7 +153,39 @@ function App() {
         title = t.title;
         body = t.body;
       });
+
     content = <Article title={title} body={body} />;
+    contextControl = (
+      <>
+        <li>
+          <a
+            href={`/update${id}`}
+            onClick={(event) => {
+              event.preventDefault();
+              setMode("UPDATE");
+            }}
+          >
+            Update Mode
+          </a>
+        </li>
+        <li>
+          <input
+            type="button"
+            value="Delete"
+            onClick={() => {
+              const newTopics = [];
+              topics.map((t) => {
+                if (t.id !== id) {
+                  newTopics.push(t);
+                }
+              });
+              setTopics(newTopics);
+              setMode("WELCOME");
+            }}
+          />
+        </li>
+      </>
+    );
   } else if (mode === "CREATE") {
     content = (
       <Create
@@ -121,6 +199,31 @@ function App() {
           setNextId(nextId + 1); // nextId 변경
         }}
       ></Create>
+    );
+  } else if (mode === "UPDATE") {
+    let title,
+      body = null;
+
+    topics
+      .filter((t) => t.id === id)
+      .map((t) => {
+        title = t.title;
+        body = t.body;
+      });
+    content = (
+      <Update
+        title={title}
+        body={body}
+        onUpdate={(title, body) => {
+          const newTopics = [...topics];
+          const updatedTopic = { id, title, body };
+          const updatedTopics = newTopics.map((t) =>
+            t.id === id ? updatedTopic : t
+          );
+          setTopics(updatedTopics);
+          setMode("READ");
+        }}
+      ></Update>
     );
   }
 
@@ -141,15 +244,18 @@ function App() {
       ></Nav>
       {/* <Article title="Welcome" body="Hello, WEB"></Article> */}
       {content}
-      <a
-        href="/create"
-        onClick={(event) => {
-          event.preventDefault();
-          setMode("CREATE");
-        }}
-      >
-        Create Mode
-      </a>
+      <li>
+        <a
+          href="/create"
+          onClick={(event) => {
+            event.preventDefault();
+            setMode("CREATE");
+          }}
+        >
+          Create Mode
+        </a>
+      </li>
+      {contextControl}
     </div>
   );
 }
